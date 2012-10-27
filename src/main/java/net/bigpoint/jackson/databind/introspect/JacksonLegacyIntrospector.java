@@ -1,9 +1,9 @@
 /**
  * 
  */
-package net.bigpoint.jackson.databind;
+package net.bigpoint.jackson.databind.introspect;
 
-import static net.bigpoint.jackson.databind.AnnotationWrappingProxy.of;
+import static net.bigpoint.jackson.databind.introspect.AnnotationWrappingProxy.of;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -227,6 +227,7 @@ public class JacksonLegacyIntrospector extends NopAnnotationIntrospector {
 		return null;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public Include findSerializationInclusion(Annotated a, Include defValue) {
 		JsonSerialize ann = a.getAnnotation(JsonSerialize.class);

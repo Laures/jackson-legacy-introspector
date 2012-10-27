@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.bigpoint.jackson.databind;
+package net.bigpoint.jackson.databind.introspect;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
