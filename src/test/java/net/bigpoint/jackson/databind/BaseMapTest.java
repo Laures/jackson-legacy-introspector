@@ -1,7 +1,5 @@
 package net.bigpoint.jackson.databind;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -10,6 +8,8 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import net.bigpoint.jackson.BaseTest;
+
+import org.junit.Assert;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -161,7 +161,7 @@ public abstract class BaseMapTest extends BaseTest {
 	 */
 
 	protected void assertEquals(int[] exp, int[] act) {
-		assertArrayEquals(exp, act);
+		Assert.assertArrayEquals(exp, act);
 	}
 
 	/**
@@ -169,9 +169,9 @@ public abstract class BaseMapTest extends BaseTest {
 	 * object of different type (false)
 	 */
 	protected void assertStandardEquals(Object o) {
-		assertTrue(o.equals(o));
-		assertFalse(o.equals(null));
-		assertFalse(o.equals(SINGLETON_OBJECT));
+		Assert.assertTrue(o.equals(o));
+		Assert.assertFalse(o.equals(null));
+		Assert.assertFalse(o.equals(SINGLETON_OBJECT));
 		// just for fun, let's also call hash code...
 		o.hashCode();
 	}

@@ -1,12 +1,13 @@
 package net.bigpoint.jackson;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -15,7 +16,7 @@ import com.fasterxml.jackson.core.JsonToken;
 
 //import static org.junit.Assert.*;
 
-public abstract class BaseTest extends TestCase {
+public abstract class BaseTest {
 	/*
 	/**********************************************************
 	/* Some sample documents:

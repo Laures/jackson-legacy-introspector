@@ -23,6 +23,9 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonTypeResolver;
 import org.codehaus.jackson.map.deser.std.StdDeserializer;
 import org.codehaus.jackson.map.jsontype.impl.StdTypeResolverBuilder;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -150,7 +153,8 @@ public class TestJacksonLegacyAnnotationIntrospector extends BaseMapTest {
 	/**
 	 * tests getting serializer/deserializer instances.
 	 */
-	public void testSerializeDeserializeWithJaxbAnnotations() throws Exception {
+	@Test
+	public void testSerializeDeserialize() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
 		JacksonExample ex = new JacksonExample();
@@ -166,23 +170,28 @@ public class TestJacksonLegacyAnnotationIntrospector extends BaseMapTest {
 		writer.close();
 
 		String json = writer.toString();
+
+		System.out.println(json);
+
 		JacksonExample readEx = mapper.readValue(json, JacksonExample.class);
 
-		assertEquals(ex.qname, readEx.qname);
-		assertEquals(ex.attributeProperty, readEx.attributeProperty);
-		assertEquals(ex.elementProperty, readEx.elementProperty);
-		assertEquals(ex.wrappedElementProperty, readEx.wrappedElementProperty);
-		assertEquals(ex.enumProperty, readEx.enumProperty);
+		Assert.assertEquals(ex.qname, readEx.qname);
+		Assert.assertEquals(ex.attributeProperty, readEx.attributeProperty);
+		Assert.assertEquals(ex.elementProperty, readEx.elementProperty);
+		Assert.assertEquals(ex.wrappedElementProperty, readEx.wrappedElementProperty);
+		Assert.assertEquals(ex.enumProperty, readEx.enumProperty);
 	}
 
+	@Test
+	@Ignore
 	public void testJsonTypeResolver() throws Exception {
 		JacksonLegacyIntrospector ai = new JacksonLegacyIntrospector();
 		AnnotatedClass ac = AnnotatedClass.constructWithoutSuperTypes(TypeResolverBean.class, ai, null);
 		JavaType baseType = TypeFactory.defaultInstance().constructType(TypeResolverBean.class);
 		ObjectMapper mapper = new ObjectMapper();
 		TypeResolverBuilder<?> rb = ai.findTypeResolver(mapper.getDeserializationConfig(), ac, baseType);
-		assertNotNull(rb);
-		assertSame(DummyBuilder.class, rb.getClass());
+		Assert.assertNotNull(rb);
+		Assert.assertSame(DummyBuilder.class, rb.getClass());
 	}
 
 	/**
@@ -190,21 +199,22 @@ public class TestJacksonLegacyAnnotationIntrospector extends BaseMapTest {
 	 * 
 	 * @since 1.7
 	 */
+	@Test
 	public void testIgnoredType() throws Exception {
 		JacksonLegacyIntrospector ai = new JacksonLegacyIntrospector();
 		AnnotatedClass ac = AnnotatedClass.construct(IgnoredType.class, ai, null);
-		assertEquals(Boolean.TRUE, ai.isIgnorableType(ac));
+		Assert.assertEquals(Boolean.TRUE, ai.isIgnorableType(ac));
 
 		// also, should inherit as expected
 		ac = AnnotatedClass.construct(IgnoredSubType.class, ai, null);
-		assertEquals(Boolean.TRUE, ai.isIgnorableType(ac));
+		Assert.assertEquals(Boolean.TRUE, ai.isIgnorableType(ac));
 	}
 
 	public void testEnumHandling() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setAnnotationIntrospector(new LcEnumIntrospector());
-		assertEquals("\"value1\"", mapper.writeValueAsString(EnumExample.VALUE1));
+		Assert.assertEquals("\"value1\"", mapper.writeValueAsString(EnumExample.VALUE1));
 		EnumExample result = mapper.readValue(quote("value1"), EnumExample.class);
-		assertEquals(EnumExample.VALUE1, result);
+		Assert.assertEquals(EnumExample.VALUE1, result);
 	}
 }
