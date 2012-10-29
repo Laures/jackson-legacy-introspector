@@ -174,6 +174,8 @@ public class TestJacksonLegacyAnnotationIntrospector extends BaseMapTest {
 
 		String json = writer.toString();
 
+		System.out.println(json);
+
 		JacksonExample readEx = mapper.readValue(json, JacksonExample.class);
 
 		Assert.assertEquals(ex.qname, readEx.qname);

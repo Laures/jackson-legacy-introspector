@@ -20,6 +20,14 @@ public class JsonSerializer1To2Wrapper<T> extends JsonSerializer<T> {
 	private org.codehaus.jackson.map.JsonSerializer<T> wrappedSerializer;
 
 	/**
+	 * @param wrappedSerializer
+	 */
+	public JsonSerializer1To2Wrapper(org.codehaus.jackson.map.JsonSerializer<T> wrappedSerializer) {
+		super();
+		this.wrappedSerializer = wrappedSerializer;
+	}
+
+	/**
 	 * @return the wrappedSerializer
 	 */
 	public org.codehaus.jackson.map.JsonSerializer<T> unwrap() {
