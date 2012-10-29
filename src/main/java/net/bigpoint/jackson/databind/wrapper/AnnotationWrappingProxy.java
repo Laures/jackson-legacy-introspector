@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.bigpoint.jackson.databind.introspect;
+package net.bigpoint.jackson.databind.wrapper;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
- * @author Alexander
+ * @author abaetz
  * 
  */
 public class AnnotationWrappingProxy<L extends Annotation> implements InvocationHandler {

@@ -3,7 +3,7 @@
  */
 package net.bigpoint.jackson.databind.introspect;
 
-import static net.bigpoint.jackson.databind.introspect.AnnotationWrappingProxy.of;
+import static net.bigpoint.jackson.databind.wrapper.AnnotationWrappingProxy.of;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize.Typing;
+import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.AnnotatedField;
@@ -47,8 +48,12 @@ import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 
 /**
- * @author Alexander
+ * This introspector works with jackson 1 annotations. For custom Serializers/Deserializers and other configurable
+ * classes this introspector will not return the class (as the default introspector would) but an instances. this is
+ * necessary as all of those classes will need to be wrapped. This means that a custom {@link HandlerInstantiator} will
+ * never be asked for an instance for those classes.
  * 
+ * @author abaetz
  */
 // TODO for all serializers: return instance of wrapped serializer as the class will implement the wrong interface!
 public class JacksonLegacyIntrospector extends NopAnnotationIntrospector {

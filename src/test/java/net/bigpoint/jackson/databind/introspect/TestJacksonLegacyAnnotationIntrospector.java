@@ -156,7 +156,9 @@ public class TestJacksonLegacyAnnotationIntrospector extends BaseMapTest {
 	@Test
 	public void testSerializeDeserialize() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.setAnnotationIntrospector(new JacksonLegacyIntrospector());
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
 		JacksonExample ex = new JacksonExample();
 		QName qname = new QName("urn:hi", "hello");
 		ex.setQname(qname);
@@ -164,14 +166,13 @@ public class TestJacksonLegacyAnnotationIntrospector extends BaseMapTest {
 		ex.setElementProperty("elementValue");
 		ex.setWrappedElementProperty(Arrays.asList("wrappedElementValue"));
 		ex.setEnumProperty(EnumExample.VALUE1);
+
 		StringWriter writer = new StringWriter();
 		mapper.writeValue(writer, ex);
 		writer.flush();
 		writer.close();
 
 		String json = writer.toString();
-
-		System.out.println(json);
 
 		JacksonExample readEx = mapper.readValue(json, JacksonExample.class);
 
@@ -210,6 +211,7 @@ public class TestJacksonLegacyAnnotationIntrospector extends BaseMapTest {
 		Assert.assertEquals(Boolean.TRUE, ai.isIgnorableType(ac));
 	}
 
+	@Test
 	public void testEnumHandling() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setAnnotationIntrospector(new LcEnumIntrospector());
