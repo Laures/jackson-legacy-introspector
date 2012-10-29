@@ -8,6 +8,8 @@ import static net.bigpoint.jackson.databind.wrapper.AnnotationWrappingProxy.of;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.bigpoint.jackson.databind.wrapper.JsonSerializer1To2Wrapper;
+
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
@@ -19,11 +21,13 @@ import org.codehaus.jackson.annotate.JsonIgnoreType;
 import org.codehaus.jackson.annotate.JsonManagedReference;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.annotate.JsonRawValue;
 import org.codehaus.jackson.annotate.JsonSetter;
 import org.codehaus.jackson.annotate.JsonSubTypes;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -46,6 +50,7 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedParameter;
 import com.fasterxml.jackson.databind.introspect.NopAnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
+import com.fasterxml.jackson.databind.ser.std.RawSerializer;
 
 /**
  * This introspector works with jackson 1 annotations. For custom Serializers/Deserializers and other configurable
@@ -55,7 +60,6 @@ import com.fasterxml.jackson.databind.jsontype.NamedType;
  * 
  * @author abaetz
  */
-// TODO for all serializers: return instance of wrapped serializer as the class will implement the wrong interface!
 public class JacksonLegacyIntrospector extends NopAnnotationIntrospector {
 
 	private static final long serialVersionUID = 1L;
@@ -440,4 +444,68 @@ public class JacksonLegacyIntrospector extends NopAnnotationIntrospector {
 		return super.findWrapperName(ann);
 	}
 
+	/*
+	 * handling of serializers
+	 */
+	@Override
+	public Object findSerializer(Annotated am) {
+		/* 21-May-2009, tatu: Slight change; primary annotation is now
+		 *    @JsonSerialize; @JsonUseSerializer is deprecated
+		 */
+		JsonSerialize ann = am.getAnnotation(JsonSerialize.class);
+		if (ann != null) {
+			Class<? extends JsonSerializer<?>> serClass = ann.using();
+			if (serClass != JsonSerializer.None.class) {
+				try {
+					return new JsonSerializer1To2Wrapper<Object>((JsonSerializer<Object>) serClass.newInstance());
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+
+		/* 18-Oct-2010, tatu: [JACKSON-351] @JsonRawValue handled just here, for now;
+		 *  if we need to get raw indicator from other sources need to add
+		 *  separate accessor within {@link AnnotationIntrospector} interface.
+		 */
+		JsonRawValue annRaw = am.getAnnotation(JsonRawValue.class);
+		if ((annRaw != null) && annRaw.value()) {
+			// let's construct instance with nominal type:
+			Class<?> cls = am.getRawType();
+			return new RawSerializer<Object>(cls);
+		}
+		return null;
+	}
+
+	@Override
+	public Object findKeySerializer(Annotated am) {
+		JsonSerialize ann = am.getAnnotation(JsonSerialize.class);
+		if (ann != null) {
+			Class<? extends JsonSerializer<?>> serClass = ann.keyUsing();
+			if (serClass != JsonSerializer.None.class) {
+				try {
+					return new JsonSerializer1To2Wrapper<Object>((JsonSerializer<Object>) serClass.newInstance());
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Object findContentSerializer(Annotated am) {
+		JsonSerialize ann = am.getAnnotation(JsonSerialize.class);
+		if (ann != null) {
+			Class<? extends JsonSerializer<?>> serClass = ann.contentUsing();
+			if (serClass != JsonSerializer.None.class) {
+				try {
+					return new JsonSerializer1To2Wrapper<Object>((JsonSerializer<Object>) serClass.newInstance());
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		return null;
+	}
 }
