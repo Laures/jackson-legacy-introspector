@@ -43,6 +43,13 @@ public class DeserializationContext2to1Wrapper extends DeserializationContext {
 		this.wrappedContext = wrappedContext;
 	}
 
+	/**
+	 * @return the wrappedContext
+	 */
+	public com.fasterxml.jackson.databind.DeserializationContext unwrap() {
+		return wrappedContext;
+	}
+
 	protected String _calcName(Class<?> cls) {
 		if (cls.isArray()) {
 			return _calcName(cls.getComponentType()) + "[]";
@@ -54,8 +61,7 @@ public class DeserializationContext2to1Wrapper extends DeserializationContext {
 		if (parser == null) {
 			return null;
 		} else {
-			// TODO unwrap here
-			return null;
+			return ((JsonParser2To1Wrapper) parser).unwrap();
 		}
 	}
 

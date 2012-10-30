@@ -10,6 +10,7 @@ import java.util.List;
 
 import net.bigpoint.jackson.databind.wrapper.JsonDeserializer1To2Wrapper;
 import net.bigpoint.jackson.databind.wrapper.JsonSerializer1To2Wrapper;
+import net.bigpoint.jackson.databind.wrapper.KeyDeserializer1To2Wrapper;
 
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
@@ -30,6 +31,7 @@ import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.KeyDeserializer;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -536,6 +538,17 @@ public class JacksonLegacyIntrospector extends NopAnnotationIntrospector {
 
 	@Override
 	public Object findKeyDeserializer(Annotated am) {
+		JsonDeserialize ann = am.getAnnotation(JsonDeserialize.class);
+		if (ann != null) {
+			Class<? extends KeyDeserializer> deserClass = ann.keyUsing();
+			if (deserClass != KeyDeserializer.None.class) {
+				try {
+					return new KeyDeserializer1To2Wrapper(deserClass.newInstance());
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
 		return null;
 	}
 

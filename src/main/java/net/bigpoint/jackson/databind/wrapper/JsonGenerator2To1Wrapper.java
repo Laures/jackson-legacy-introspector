@@ -312,6 +312,16 @@ public class JsonGenerator2To1Wrapper extends JsonGenerator {
 		wrappedGenerator.close();
 	}
 
+	@Override
+	public void copyCurrentEvent(JsonParser jp) throws IOException, JsonProcessingException {
+		wrappedGenerator.copyCurrentEvent(((JsonParser2To1Wrapper) jp).unwrap());
+	}
+
+	@Override
+	public void copyCurrentStructure(JsonParser jp) throws IOException, JsonProcessingException {
+		wrappedGenerator.copyCurrentStructure(((JsonParser2To1Wrapper) jp).unwrap());
+	}
+
 	/**
 	 * Not supported
 	 */
@@ -345,24 +355,6 @@ public class JsonGenerator2To1Wrapper extends JsonGenerator {
 	@Override
 	public void writeTree(JsonNode rootNode) throws IOException, JsonProcessingException {
 		throw new RuntimeException();
-	}
-
-	/**
-	 * Not supported
-	 */
-	@Override
-	public void copyCurrentEvent(JsonParser jp) throws IOException, JsonProcessingException {
-		throw new RuntimeException();
-
-	}
-
-	/**
-	 * Not supported
-	 */
-	@Override
-	public void copyCurrentStructure(JsonParser jp) throws IOException, JsonProcessingException {
-		throw new RuntimeException();
-
 	}
 
 	/**
