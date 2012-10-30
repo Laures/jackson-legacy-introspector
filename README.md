@@ -14,6 +14,6 @@ ObjectMapper mapper = new ObjectMapper();
 mapper.setAnnotationIntrospector(new JacksonLegacyIntrospector());
 ```
 
-# Not Supported Options
+# Limitations
 
-Because EVERY class in Jackson changed Custom (De-)Serializers are not supported yet. Every annotated (De-)Serializer is silently ignored!
+While the Introspector will wrap annotated custom Deserializer,Serializer, KeySerializer and the like so they can be used by Jackson 2 those wrappers do not provide the full featureset of Jackson 1. As a rule of thumb: if the custom implementation makes a call that requires a parameter of return type that is no Enum value or Basic Java Class, check the necessary wrapper if this method is provided. 

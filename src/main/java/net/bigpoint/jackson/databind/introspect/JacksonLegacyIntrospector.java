@@ -8,6 +8,7 @@ import static net.bigpoint.jackson.databind.wrapper.AnnotationWrappingProxy.of;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.bigpoint.jackson.databind.wrapper.JsonDeserializer1To2Wrapper;
 import net.bigpoint.jackson.databind.wrapper.JsonSerializer1To2Wrapper;
 
 import org.codehaus.jackson.annotate.JsonAnyGetter;
@@ -27,6 +28,7 @@ import org.codehaus.jackson.annotate.JsonSubTypes;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonRootName;
@@ -501,6 +503,50 @@ public class JacksonLegacyIntrospector extends NopAnnotationIntrospector {
 			if (serClass != JsonSerializer.None.class) {
 				try {
 					return new JsonSerializer1To2Wrapper<Object>((JsonSerializer<Object>) serClass.newInstance());
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		return null;
+	}
+
+	/*
+	 * handling of deserializers
+	 */
+	@Override
+	public Object findDeserializer(Annotated am) {
+		/* 21-May-2009, tatu: Slight change; primary annotation is now
+		 *    @JsonDeserialize; @JsonUseDeserializer is deprecated
+		 */
+		JsonDeserialize ann = am.getAnnotation(JsonDeserialize.class);
+		if (ann != null) {
+			Class<? extends JsonDeserializer<?>> deserClass = ann.using();
+			if (deserClass != JsonDeserializer.None.class) {
+				try {
+					return new JsonDeserializer1To2Wrapper<Object>((JsonDeserializer<Object>) deserClass.newInstance());
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		// 31-Jan-2010, tatus: @JsonUseDeserializer removed as of 1.5
+		return null;
+	}
+
+	@Override
+	public Object findKeyDeserializer(Annotated am) {
+		return null;
+	}
+
+	@Override
+	public Object findContentDeserializer(Annotated am) {
+		JsonDeserialize ann = am.getAnnotation(JsonDeserialize.class);
+		if (ann != null) {
+			Class<? extends JsonDeserializer<?>> deserClass = ann.contentUsing();
+			if (deserClass != JsonDeserializer.None.class) {
+				try {
+					return new JsonDeserializer1To2Wrapper<Object>((JsonDeserializer<Object>) deserClass.newInstance());
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
