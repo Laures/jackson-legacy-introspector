@@ -32,12 +32,15 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.KeyDeserializer;
+import org.codehaus.jackson.map.annotate.JacksonInject;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.codehaus.jackson.map.annotate.NoClass;
 
+import com.fasterxml.jackson.annotation.JsonFormat.Value;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
@@ -52,6 +55,7 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.databind.introspect.AnnotatedParameter;
 import com.fasterxml.jackson.databind.introspect.NopAnnotationIntrospector;
+import com.fasterxml.jackson.databind.introspect.ObjectIdInfo;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.ser.std.RawSerializer;
@@ -157,7 +161,6 @@ public class JacksonLegacyIntrospector extends NopAnnotationIntrospector {
 	@Override
 	public PropertyName findNameForDeserialization(Annotated a) {
 		// [Issue#69], need bit of delegation
-		// !!! TODO: in 2.2, remove old methods?
 		String name;
 		if (a instanceof AnnotatedField) {
 			name = findDeserializationName((AnnotatedField) a);
@@ -303,7 +306,6 @@ public class JacksonLegacyIntrospector extends NopAnnotationIntrospector {
 	@Override
 	public PropertyName findNameForSerialization(Annotated a) {
 		// [Issue#69], need bit of delegation
-		// !!! TODO: in 2.2, remove old methods?
 		String name;
 		if (a instanceof AnnotatedField) {
 			name = findSerializationName((AnnotatedField) a);
@@ -433,6 +435,42 @@ public class JacksonLegacyIntrospector extends NopAnnotationIntrospector {
 	@Override
 	public Object findNamingStrategy(AnnotatedClass ac) {
 		return super.findNamingStrategy(ac);
+	}
+
+	@Override
+	public Boolean isTypeId(AnnotatedMember member) {
+		return super.isTypeId(member);
+	}
+
+	@Override
+	public Value findFormat(Annotated memberOrClass) {
+		return super.findFormat(memberOrClass);
+	}
+
+	@Override
+	@Deprecated
+	public Value findFormat(AnnotatedMember member) {
+		return super.findFormat(member);
+	}
+
+	@Override
+	public ObjectIdInfo findObjectIdInfo(Annotated ann) {
+		return super.findObjectIdInfo(ann);
+	}
+
+	@Override
+	public ObjectIdInfo findObjectReferenceInfo(Annotated ann, ObjectIdInfo objectIdInfo) {
+		return super.findObjectReferenceInfo(ann, objectIdInfo);
+	}
+
+	@Override
+	public Class<?> findPOJOBuilder(AnnotatedClass ac) {
+		return super.findPOJOBuilder(ac);
+	}
+
+	@Override
+	public com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder.Value findPOJOBuilderConfig(AnnotatedClass ac) {
+		return super.findPOJOBuilderConfig(ac);
 	}
 
 	/*
@@ -567,4 +605,42 @@ public class JacksonLegacyIntrospector extends NopAnnotationIntrospector {
 		}
 		return null;
 	}
+
+	@Override
+	public Object findFilterId(AnnotatedClass ac) {
+		JsonFilter ann = ac.getAnnotation(JsonFilter.class);
+		if (ann != null) {
+			String id = ann.value();
+			// Empty String is same as not having annotation, to allow overrides
+			if (id.length() > 0) {
+				return id;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Object findInjectableValueId(AnnotatedMember m) {
+		JacksonInject ann = m.getAnnotation(JacksonInject.class);
+		if (ann == null) {
+			return null;
+		}
+		/* Empty String means that we should use name of declared
+		 * value class.
+		 */
+		String id = ann.value();
+		if (id.length() == 0) {
+			// slight complication; for setters, type
+			if (!(m instanceof AnnotatedMethod)) {
+				return m.getRawType().getName();
+			}
+			AnnotatedMethod am = (AnnotatedMethod) m;
+			if (am.getParameterCount() == 0) {
+				return m.getRawType().getName();
+			}
+			return am.getParameter(0).getName();
+		}
+		return id;
+	}
+
 }

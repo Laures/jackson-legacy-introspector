@@ -57,18 +57,9 @@ public class DeserializationContext2to1Wrapper extends DeserializationContext {
 		return cls.getName();
 	}
 
-	protected com.fasterxml.jackson.core.JsonParser unwrapParser(JsonParser parser) {
-		if (parser == null) {
-			return null;
-		} else {
-			return ((JsonParser2To1Wrapper) parser).unwrap();
-		}
-	}
-
 	@Override
 	public JsonParser getParser() {
-		// TODO parser wrapper
-		return null;
+		return new JsonParser2To1Wrapper(wrappedContext.getParser());
 	}
 
 	@Override

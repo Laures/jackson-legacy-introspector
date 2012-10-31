@@ -3,6 +3,8 @@
  */
 package net.bigpoint.jackson.databind.wrapper;
 
+import static net.bigpoint.jackson.databind.wrapper.JacksonTransformers.wrapJsonParseException;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -40,12 +42,6 @@ public class JsonParser2To1Wrapper extends JsonParser {
 		return wrappedParser;
 	}
 
-	protected JsonParseException wrapJsonParseException(com.fasterxml.jackson.core.JsonParseException exception) {
-		return new JsonParseException("wrapped exception", new JsonLocation(exception.getLocation().getSourceRef(),
-				exception.getLocation().getCharOffset(), exception.getLocation().getByteOffset(), exception.getLocation()
-						.getLineNr(), exception.getLocation().getColumnNr()), exception);
-	}
-
 	@Override
 	public ObjectCodec getCodec() {
 		// TODO Auto-generated method stub
@@ -56,6 +52,18 @@ public class JsonParser2To1Wrapper extends JsonParser {
 	public void setCodec(ObjectCodec c) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public JsonStreamContext getParsingContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public byte[] getBinaryValue(Base64Variant b64variant) throws IOException, JsonParseException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -94,12 +102,6 @@ public class JsonParser2To1Wrapper extends JsonParser {
 		} catch (com.fasterxml.jackson.core.JsonParseException e) {
 			throw wrapJsonParseException(e);
 		}
-	}
-
-	@Override
-	public JsonStreamContext getParsingContext() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -222,12 +224,6 @@ public class JsonParser2To1Wrapper extends JsonParser {
 		} catch (com.fasterxml.jackson.core.JsonParseException e) {
 			throw wrapJsonParseException(e);
 		}
-	}
-
-	@Override
-	public byte[] getBinaryValue(Base64Variant b64variant) throws IOException, JsonParseException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

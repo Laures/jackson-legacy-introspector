@@ -328,7 +328,6 @@ public class JsonGenerator2To1Wrapper extends JsonGenerator {
 	@Override
 	public void writeBinary(Base64Variant b64variant, byte[] data, int offset, int len) throws IOException,
 			JsonGenerationException {
-		// TODO what to do now?
 		throw new RuntimeException();
 	}
 
@@ -337,7 +336,6 @@ public class JsonGenerator2To1Wrapper extends JsonGenerator {
 	 */
 	@Override
 	public JsonGenerator setCodec(ObjectCodec oc) {
-		// TODO what to do here?
 		return this;
 	}
 

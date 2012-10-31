@@ -3,6 +3,12 @@
  */
 package net.bigpoint.jackson.databind.wrapper;
 
+import static net.bigpoint.jackson.databind.wrapper.JacksonTransformers.transformBeanProperty;
+import static net.bigpoint.jackson.databind.wrapper.JacksonTransformers.transformJavaType;
+import static net.bigpoint.jackson.databind.wrapper.JacksonTransformers.unwrapGenerator;
+import static net.bigpoint.jackson.databind.wrapper.JacksonTransformers.wrapMappingException;
+import static net.bigpoint.jackson.databind.wrapper.JacksonTransformers.wrapProcessingException;
+
 import java.io.IOException;
 import java.util.Date;
 
@@ -47,6 +53,130 @@ public class SerializerProvider2To1Wrapper extends SerializerProvider {
 	}
 
 	@Override
+	public JsonSerializer<Object> findValueSerializer(Class<?> runtimeType, BeanProperty property)
+			throws JsonMappingException {
+		try {
+			return new JsonSerializer2To1Wrapper<Object>(wrappedProvider.findValueSerializer(runtimeType,
+					transformBeanProperty(property)));
+		} catch (com.fasterxml.jackson.databind.JsonMappingException e) {
+			throw wrapMappingException(e);
+		}
+	}
+
+	@Override
+	public JsonSerializer<Object> findValueSerializer(JavaType serializationType, BeanProperty property)
+			throws JsonMappingException {
+		try {
+			return new JsonSerializer2To1Wrapper<Object>(wrappedProvider.findValueSerializer(
+					transformJavaType(serializationType, wrappedProvider), transformBeanProperty(property)));
+		} catch (com.fasterxml.jackson.databind.JsonMappingException e) {
+			throw wrapMappingException(e);
+		}
+	}
+
+	@Override
+	public JsonSerializer<Object> findTypedValueSerializer(Class<?> valueType, boolean cache, BeanProperty property)
+			throws JsonMappingException {
+		try {
+			return new JsonSerializer2To1Wrapper<Object>(wrappedProvider.findTypedValueSerializer(valueType, cache,
+					transformBeanProperty(property)));
+		} catch (com.fasterxml.jackson.databind.JsonMappingException e) {
+			throw wrapMappingException(e);
+		}
+	}
+
+	@Override
+	public JsonSerializer<Object> findTypedValueSerializer(JavaType valueType, boolean cache, BeanProperty property)
+			throws JsonMappingException {
+		try {
+			return new JsonSerializer2To1Wrapper<Object>(wrappedProvider.findTypedValueSerializer(
+					transformJavaType(valueType, wrappedProvider), cache, transformBeanProperty(property)));
+		} catch (com.fasterxml.jackson.databind.JsonMappingException e) {
+			throw wrapMappingException(e);
+		}
+	}
+
+	@Override
+	public JsonSerializer<Object> findKeySerializer(JavaType keyType, BeanProperty property) throws JsonMappingException {
+		try {
+			return new JsonSerializer2To1Wrapper<Object>(wrappedProvider.findKeySerializer(
+					transformJavaType(keyType, wrappedProvider), transformBeanProperty(property)));
+		} catch (com.fasterxml.jackson.databind.JsonMappingException e) {
+			throw wrapMappingException(e);
+		}
+	}
+
+	@Override
+	public JsonSerializer<Object> getNullKeySerializer() {
+		return new JsonSerializer2To1Wrapper<Object>(wrappedProvider.getDefaultNullKeySerializer());
+	}
+
+	@Override
+	public JsonSerializer<Object> getNullValueSerializer() {
+		return new JsonSerializer2To1Wrapper<Object>(wrappedProvider.getDefaultNullValueSerializer());
+	}
+
+	@Override
+	public JsonSerializer<Object> getUnknownTypeSerializer(Class<?> unknownType) {
+		return new JsonSerializer2To1Wrapper<Object>(wrappedProvider.getUnknownTypeSerializer(unknownType));
+	}
+
+	@Override
+	public void defaultSerializeDateValue(long timestamp, JsonGenerator jgen) throws IOException, JsonProcessingException {
+		try {
+			wrappedProvider.defaultSerializeDateValue(timestamp, unwrapGenerator(jgen));
+		} catch (com.fasterxml.jackson.databind.JsonMappingException e) {
+			throw wrapProcessingException(e);
+		}
+
+	}
+
+	@Override
+	public void defaultSerializeDateValue(Date date, JsonGenerator jgen) throws IOException, JsonProcessingException {
+		try {
+			wrappedProvider.defaultSerializeDateValue(date, unwrapGenerator(jgen));
+		} catch (com.fasterxml.jackson.databind.JsonMappingException e) {
+			throw wrapProcessingException(e);
+		}
+
+	}
+
+	@Override
+	public void defaultSerializeDateKey(long timestamp, JsonGenerator jgen) throws IOException, JsonProcessingException {
+		try {
+			wrappedProvider.defaultSerializeDateKey(timestamp, unwrapGenerator(jgen));
+		} catch (com.fasterxml.jackson.databind.JsonMappingException e) {
+			throw wrapProcessingException(e);
+		}
+
+	}
+
+	@Override
+	public void defaultSerializeDateKey(Date date, JsonGenerator jgen) throws IOException, JsonProcessingException {
+		try {
+			wrappedProvider.defaultSerializeDateKey(date, unwrapGenerator(jgen));
+		} catch (com.fasterxml.jackson.databind.JsonMappingException e) {
+			throw wrapProcessingException(e);
+		}
+
+	}
+
+	/*
+	 * Will probably not be implemented
+	 */
+
+	@Override
+	public int cachedSerializersCount() {
+		// TODO impossible
+		return 0;
+	}
+
+	@Override
+	public void flushCachedSerializers() {
+		// TODO impossible
+	}
+
+	@Override
 	public void setNullKeySerializer(JsonSerializer<Object> nks) {
 		// TODO Auto-generated method stub
 
@@ -88,93 +218,6 @@ public class SerializerProvider2To1Wrapper extends SerializerProvider {
 	public boolean hasSerializerFor(SerializationConfig cfg, Class<?> cls, SerializerFactory jsf) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public JsonSerializer<Object> findValueSerializer(Class<?> runtimeType, BeanProperty property)
-			throws JsonMappingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public JsonSerializer<Object> findValueSerializer(JavaType serializationType, BeanProperty property)
-			throws JsonMappingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public JsonSerializer<Object> findTypedValueSerializer(Class<?> valueType, boolean cache, BeanProperty property)
-			throws JsonMappingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public JsonSerializer<Object> findTypedValueSerializer(JavaType valueType, boolean cache, BeanProperty property)
-			throws JsonMappingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public JsonSerializer<Object> findKeySerializer(JavaType keyType, BeanProperty property) throws JsonMappingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public JsonSerializer<Object> getNullKeySerializer() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public JsonSerializer<Object> getNullValueSerializer() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public JsonSerializer<Object> getUnknownTypeSerializer(Class<?> unknownType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void defaultSerializeDateValue(long timestamp, JsonGenerator jgen) throws IOException, JsonProcessingException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void defaultSerializeDateValue(Date date, JsonGenerator jgen) throws IOException, JsonProcessingException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void defaultSerializeDateKey(long timestamp, JsonGenerator jgen) throws IOException, JsonProcessingException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void defaultSerializeDateKey(Date date, JsonGenerator jgen) throws IOException, JsonProcessingException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public int cachedSerializersCount() {
-		// TODO impossible
-		return 0;
-	}
-
-	@Override
-	public void flushCachedSerializers() {
-		// TODO impossible
 	}
 
 }
