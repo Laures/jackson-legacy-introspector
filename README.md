@@ -18,4 +18,4 @@ mapper.setAnnotationIntrospector(new JacksonLegacyIntrospector());
 
 While the Introspector will wrap annotated custom Deserializer,Serializer, KeySerializer and the like so they can be used by Jackson 2 those wrappers do not provide the full featureset of Jackson 1. 
 
-####**Rule of thumb:** if the custom implementation makes a call that requires a parameter or has a return type that is not an Enum value or Basic Java Class, check the necessary wrapper if this method is provided.
+**Rule of thumb:** if the custom implementation makes a call that requires a parameter or has a return type that is not an Enum value or Basic Java Class, check the necessary wrapper if this method is provided.
