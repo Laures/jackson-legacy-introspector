@@ -118,14 +118,17 @@
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <version>2.0.1</version>
+                <version>2.5.2</version>
                 <configuration>
-                    <findbugsXmlOutput>true</findbugsXmlOutput>
-                    <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                    <encoding>UTF-8</encoding>
+                    <threshold>low</threshold>
                     <xmlOutput>true</xmlOutput>
+                    <findbugsXmlOutput>true</findbugsXmlOutput>
+                    <!-- xmlOutputDirectory>target/site</xmlOutputDirectory -->
                 </configuration>
             </plugin>
             <plugin>
