@@ -14,6 +14,28 @@ ObjectMapper mapper = new ObjectMapper();
 mapper.setAnnotationIntrospector(new JacksonLegacyIntrospector());
 ```
 
+(Optional) To use both Jackson 1 and 2 annotaions, register custome module by simple code
+
+```
+ObjectMapper mapper = new ObjectMapper();
+mapper.registerModule(new Module() {
+  		@Override
+			public Version version() {
+				return new Version(1, 0, 0, "", "net.bigpoint.jackson", "JacksonLegacySupport");
+			}
+			
+			@Override
+			public void setupModule(SetupContext context) {
+				context.appendAnnotationIntrospector(new JacksonLegacyIntrospector());
+			}
+			
+			@Override
+			public String getModuleName() {
+				return "JacksonLegacySupport";
+			}
+		});
+```
+
 # Limitations
 
 While the Introspector will wrap annotated custom Deserializer,Serializer, KeySerializer and the like so they can be used by Jackson 2 those wrappers do not provide the full featureset of Jackson 1. 
