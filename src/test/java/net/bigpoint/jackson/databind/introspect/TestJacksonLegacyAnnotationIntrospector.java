@@ -12,6 +12,7 @@ import net.bigpoint.jackson.databind.BaseMapTest;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreType;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
@@ -31,6 +32,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
@@ -133,6 +135,20 @@ public class TestJacksonLegacyAnnotationIntrospector extends BaseMapTest {
 
 	static class IgnoredSubType extends IgnoredType {
 	}
+	
+	static class SimpleIgnore {
+		String data;
+
+		@JsonIgnore
+		public String getData() {
+			return data;
+		}
+
+		@JsonIgnore
+		public void setData(String data) {
+			this.data = data;
+		}		
+	}
 
 	// Test to ensure we can override enum settings
 	static class LcEnumIntrospector extends JacksonLegacyIntrospector {
@@ -211,6 +227,15 @@ public class TestJacksonLegacyAnnotationIntrospector extends BaseMapTest {
 		// also, should inherit as expected
 		ac = AnnotatedClass.construct(IgnoredSubType.class, ai, null);
 		Assert.assertEquals(Boolean.TRUE, ai.isIgnorableType(ac));
+	}
+	
+	@Test
+	public void testSimpleIgnore() throws Exception {
+		JacksonLegacyIntrospector ai = new JacksonLegacyIntrospector();
+
+		AnnotatedClass ac = AnnotatedClass.construct(SimpleIgnore.class, ai, null);
+		AnnotatedMember am = ac.memberMethods().iterator().next();
+		Assert.assertTrue(ai.hasIgnoreMarker(am));
 	}
 
 	@Test
