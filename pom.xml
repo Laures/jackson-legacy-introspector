@@ -3,7 +3,7 @@
 
 	<groupId>net.bigpoint</groupId>
 	<artifactId>jackson-legacy-introspector</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.1-SNAPSHOT</version>
 
 	<name>Jackson Legacy Introspector</name>
 	<url>https://github.com/Laures/jackson-legacy-introspector</url>
