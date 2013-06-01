@@ -122,13 +122,6 @@
 			<version>1.9.0</version>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>com.github.github</groupId>
-			<artifactId>site-maven-plugin</artifactId>
-			<version>0.8</version>
-		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -230,13 +223,6 @@
 							<artifactId>maven-javadoc-plugin</artifactId>
 							<version>2.8</version>
 						</plugin>
-						<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-javadoc-plugin</artifactId> 
-							<version>2.8</version> <configuration> <name>Spring Docs</name> <description>Spring 
-							documentation</description> <doclet>org.springdoclet.SpringDoclet</doclet> 
-							<docletArtifact> <groupId>org.springdoclet</groupId> <artifactId>springdoclet</artifactId> 
-							<version>0.0.1</version> </docletArtifact> <useStandardDocletOptions>false</useStandardDocletOptions> 
-							<destDir>springdocs</destDir> <additionalparam> -f index.html -linkpath ../xref/ 
-							</additionalparam> </configuration> </plugin> -->
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-jxr-plugin</artifactId>
