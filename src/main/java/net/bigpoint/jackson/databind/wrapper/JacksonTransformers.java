@@ -3,6 +3,9 @@
  */
 package net.bigpoint.jackson.databind.wrapper;
 
+import com.fasterxml.jackson.core.JsonToken;
+import org.codehaus.jackson.Base64Variant;
+import org.codehaus.jackson.Base64Variants;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonLocation;
@@ -13,6 +16,9 @@ import org.codehaus.jackson.map.BeanProperty;
 import org.codehaus.jackson.map.DeserializationContext;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.type.JavaType;
+import org.codehaus.jackson.type.TypeReference;
+
+import java.lang.reflect.Type;
 
 /**
  * @author Alexander
@@ -121,5 +127,57 @@ public abstract class JacksonTransformers {
 		return new JsonMappingException("wrapped exception", new JsonLocation(e.getLocation().getSourceRef(), e
 				.getLocation().getByteOffset(), e.getLocation().getCharOffset(), e.getLocation().getLineNr(), e.getLocation()
 				.getColumnNr()), e);
+	}
+
+	public static com.fasterxml.jackson.core.Base64Variant transformBase64Variant(Base64Variant b64variant) {
+		if (b64variant == null) {
+			return null;
+		}
+		if (b64variant == Base64Variants.MIME) {
+			return com.fasterxml.jackson.core.Base64Variants.MIME;
+		}
+		if (b64variant == Base64Variants.MIME_NO_LINEFEEDS) {
+			return com.fasterxml.jackson.core.Base64Variants.MIME_NO_LINEFEEDS;
+		}
+		if (b64variant == Base64Variants.MODIFIED_FOR_URL) {
+			return com.fasterxml.jackson.core.Base64Variants.MODIFIED_FOR_URL;
+		}
+		if (b64variant == Base64Variants.PEM) {
+			return com.fasterxml.jackson.core.Base64Variants.PEM;
+		}
+		throw new UnsupportedOperationException("Only default Base64Variants are supported.");
+	}
+
+	public static org.codehaus.jackson.JsonToken transformJsonToken(JsonToken token) {
+		if (token == null) {
+			return null;
+		}
+		return org.codehaus.jackson.JsonToken.valueOf(token.name());
+	}
+
+	public static JsonParser.NumberType transformNumberType(com.fasterxml.jackson.core.JsonParser.NumberType numberType) {
+		if (numberType == null) {
+			return null;
+		}
+		return JsonParser.NumberType.valueOf(numberType.name());
+	}
+
+	public static com.fasterxml.jackson.core.type.TypeReference<?> transformTypeReference(final TypeReference<?> typeReference) {
+		if (typeReference == null) {
+			return null;
+		}
+		return new com.fasterxml.jackson.core.type.TypeReference<Object>() {
+			@Override
+			public Type getType() {
+				return typeReference.getType();
+			}
+		};
+	}
+
+	public static com.fasterxml.jackson.core.JsonParser.Feature transformFeature(JsonParser.Feature feature) {
+		if (feature == null) {
+			return null;
+		}
+		return com.fasterxml.jackson.core.JsonParser.Feature.valueOf(feature.name());
 	}
 }
