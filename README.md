@@ -1,4 +1,4 @@
-# Jackson 1 to Jackson 2 Legacy Introspector [![Build Status](https://laures.ci.cloudbees.com/buildStatus/icon?job=JacksonLegacyIntrospector)](https://laures.ci.cloudbees.com/job/JacksonLegacyIntrospector/)
+# Jackson 1 to Jackson 2 Legacy Introspector [![Build Status](https://laures.ci.cloudbees.com/buildStatus/icon?job=JacksonLegacyIntrospector)](https://laures.ci.cloudbees.com/job/JacksonLegacyIntrospector/) [![Dependency Status](https://www.versioneye.com/user/projects/525c17b3632bac09b70004f0/badge.png)](https://www.versioneye.com/user/projects/525c17b3632bac09b70004f0)
 This project provides support for Jackson 1 annotations in Jackson 2
 
 With the newest major version of the Jackson-JSON Processor the package names of all Jackson classes changed from `org.codehouse` to `com.fasterxml`. With this change all classes that were annotated for Jackson 1.9 no longer work with Jackson 2.
